@@ -1,0 +1,51 @@
+{
+  "summary" : "Shortcut keys to toggle style for active and disabled states",
+  "website" : "https://github.com/hci00",
+  "keywords" : [ "DF internal tool", "style", "symbol states"],
+  "languages" : [ "en", "de", "fr", "ja", "ko", "zh", "es", "pt" ],
+  "author" : "Karman Chan",
+  "description" : "This plugin allows you to use keyboard shortcut keys to toggle the style of DF UI elements.",
+  "helpUrl" : "https://github.com/hci00",
+  "main" : "main.js",
+  "icons" : [ {
+    "path" : "images/pluginIcon1.png",
+    "width" : 48,
+    "height" : 48
+  }, {
+    "path" : "images/pluginIcon2.png",
+    "width" : 96,
+    "height" : 96
+  }, {
+    "path" : "images/pluginIcon3.png",
+    "width" : 144,
+    "height" : 144
+  }, {
+    "path" : "images/pluginIcon4.png",
+    "width" : 192,
+    "height" : 192
+  } ],
+  "version" : "1.0.0",
+  "releaseNotes" : "Release notes for the plugin version, at least 3 characters and no more than 1000 characters",
+  "name" : "DF UI Plugin",
+  "host" : {
+    "app" : "XD",
+    "minVersion" : "13.0"
+  },
+  "id" : "a6a4706a",
+  "uiEntryPoints" : [ {
+    "label" : "DF UI Plugin",
+    "type" : "menu",
+    "menuItems": [{
+      "type":"menu",
+      "label":"Toggle Button States",
+      "commandId": "dfToggleButtonStates",
+      "shortcut": { "mac": "Cmd+Alt+B", "win": "Ctrl+Alt+B" }
+    },
+    {
+      "type":"menu",
+      "label":"Toggle Tabs",
+      "commandId": "dfToggleTabStates",
+      "shortcut": { "mac": "Cmd+Alt+T", "win": "Ctrl+Alt+T" }
+    }]
+  }]
+}
