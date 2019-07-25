@@ -24,7 +24,7 @@
     "width" : 192,
     "height" : 192
   } ],
-  "version" : "1.0.0",
+  "version" : "1.0.1",
   "releaseNotes" : "Release notes for the plugin version, at least 3 characters and no more than 1000 characters",
   "name" : "DF UI Plugin",
   "host" : {
@@ -46,6 +46,12 @@
       "label":"Toggle Tabs",
       "commandId": "dfToggleTabStates",
       "shortcut": { "mac": "Cmd+Alt+T", "win": "Ctrl+Alt+T" }
+    },
+    {
+      "type":"menu",
+      "label":"Verify Palette",
+      "commandId": "dfCheckPalette",
+      "shortcut": { "mac": "Cmd+Alt+P", "win": "Ctrl+Alt+P" }
     }]
   }]
 }

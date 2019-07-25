@@ -11,39 +11,17 @@ var textDisabledColor = new Color("#B7B7B7"); // not #AAAAAA?
 var iconDefaultColor = new Color("#1E51BF"); // not #003DA5?
 var iconDisabledColor = new Color("#B7B7B7");
 
+var guidelineColor = ["#000000","#969696","#cccccc"];
+
+var violationColorArray = [];
+
 function dfToggleButtonStates(selection) {
-    // Go to Plugins > Development > Developer Console to see this log output
-    // console.log("dfToggleButtonStates is running!");
-    // if selected item is text toggle colors
-    selection.items.forEach(node =>
-    {
-      if(node instanceof Text){
-        toggleTextColor(node);
-      }else if(node instanceof Path){
-        toggleIconColor(newNode);
-      }else if(node instanceof SymbolInstance || node instanceof Group){
-        // if selected is a symbol group, loop the text and update color
-        // duplicate this symbol before changing properties
-        commands.duplicate();
-        commands.ungroup();
-        selection.items.forEach(newNode => {
-            // loop inside symbol and update color
-            if (newNode instanceof Text) {
-              toggleTextColor(newNode);
-            }else if(newNode instanceof Path){
-              toggleIconColor(newNode);
-            }
-        })
-        commands.group();
-
-      }else{
-        // don't do anything, not sure how to handle it
-      }
-    })
-
+    traverseTree(node, toggleTextColor);
 }
-function toggleTextColor(node){
+
+function toggleColor(node){
   // swap color if selected is Text
+  if(node instanceof Text){
   switch (node.fill.toHex(true)){
     case textDefaultColor.toHex(true):
       node.fill = textDisabledColor;
@@ -52,30 +30,74 @@ function toggleTextColor(node){
       node.fill = textDefaultColor;
       break;
     default:
-      console.log("Selected text " + node.fill.toHex(true) + " not default behaviour so ignore it.");
+      console.log(node.name + " :" + node.fill.toHex(true) + " not an acceptable button color, ignore it.");
     }
+  }
+
+  if(node instanceof Path){
+    switch (node.fill.toHex(true)){
+      case iconDefaultColor.toHex(true):
+        node.fill = iconDisabledColor;
+        break;
+      case iconDisabledColor.toHex(true):
+        node.fill = iconDefaultColor;
+        break;
+      default:
+        console.log(node.name + " :" + node.fill.toHex(true) + " not an acceptable button color, ignore it.");
+      }
+  }
 }
-function toggleIconColor(node){
-  // swap color if selected is a path
-  switch (node.fill.toHex(true)){
-    case iconDefaultColor.toHex(true):
-      node.fill = iconDisabledColor;
-      break;
-    case iconDisabledColor.toHex(true):
-      node.fill = iconDefaultColor;
-      break;
-    default:
-      console.log("Selected path " + node.fill.toHex(true) + " not default behaviour so ignore it.");
-    }
-}
+
 
 function dfToggleTabStates(selection) {
   // coming soon
 
 }
 
-function filterAndColor(selection, documentRoot) {
-  // test ground
+
+function checkFillStroke(node){
+  // see if there's any color in file or border that doesn't belong to DF palette under the color guideline
+
+    if(node instanceof Text || node instanceof Rectangle ||
+    node instanceof Path || node instanceof Ellipse){
+
+      // fill color fail
+      if((node.fill instanceof Color) && !guidelineColor.includes(node.fill.toHex(true))){
+        console.log(node.name.substring(0,30) + " fill color not in guideline: " + node.fill.toHex(true));
+        violationColorArray.push(node.fill);
+      }
+
+      // stroke color fail
+      if((node.stroke instanceof Color)  && !guidelineColor.includes(node.stroke.toHex(true))){
+        console.log(node.name.substring(0,30)+ " stroke color not in guideline: " + node.stroke.toHex(true));
+        violationColorArray.push(node.fill);
+      }
+
+
+    } // else is a group
+      // console.log("is a group or undefined" + node);
+
+}
+function traverseTree(node, command, value = null)
+{
+  command(node, value);
+
+  if (node.isContainer) {
+    var childNodes = node.children;
+
+    for(var i=0;i<childNodes.length;i++) {
+      let childNode = childNodes.at(i);
+
+      traverseTree(childNode, command, value);
+    }
+  }
+}
+function dfCheckPalette(selection, documentRoot){
+
+  traverseTree(documentRoot, checkFillStroke);
+
+  // consolidate violation colors, sort and get unique list of hex code
+  // generate dialog UI to ask if user wants to replace with a similar color that's in the guideline
 
 }
 
@@ -83,6 +105,7 @@ function filterAndColor(selection, documentRoot) {
 module.exports = {
     commands: {
         dfToggleButtonStates,
-        dfToggleTabStates
+        dfToggleTabStates,
+        dfCheckPalette
     }
 };
